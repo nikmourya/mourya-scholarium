@@ -1,0 +1,81 @@
+.landing { min-height: 100vh; background: var(--ivory); }
+
+/* Hero */
+.hero {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 60%, var(--navy-mid) 100%);
+  color: var(--ivory);
+  padding: 80px 20px 100px;
+  text-align: center;
+}
+.heroInner { max-width: 720px; margin: 0 auto; }
+.brand { margin-bottom: 32px; }
+.logo {
+  width: 80px; height: 80px; margin: 0 auto 20px;
+  background: rgba(201,168,76,0.15); border: 2px solid var(--gold);
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+}
+.logoMark {
+  font-family: var(--font-display); font-size: 28px; font-weight: 700;
+  color: var(--gold); letter-spacing: 2px;
+}
+.title {
+  font-family: var(--font-display); font-size: 2.8rem; font-weight: 700;
+  color: var(--ivory); margin-bottom: 8px;
+}
+.tagline {
+  font-family: var(--font-body); font-size: 1.1rem; color: var(--gold-light);
+  font-weight: 300;
+}
+.subtitle {
+  font-size: 1rem; color: rgba(245,240,232,0.8); line-height: 1.7;
+  margin-bottom: 36px; max-width: 560px; margin-left: auto; margin-right: auto;
+}
+.ctas { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+/* Features */
+.features { padding: 80px 20px; }
+.featureGrid {
+  max-width: 960px; margin: 0 auto;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+}
+.featureCard {
+  background: var(--white); border-radius: var(--radius-lg);
+  padding: 32px 24px; text-align: center;
+  box-shadow: var(--shadow-card); transition: transform var(--transition), box-shadow var(--transition);
+}
+.featureCard:hover { transform: translateY(-4px); box-shadow: var(--shadow-panel); }
+.featureIcon { font-size: 2.5rem; margin-bottom: 16px; }
+.featureCard h3 {
+  font-family: var(--font-display); font-size: 1.2rem; margin-bottom: 8px; color: var(--navy);
+}
+.featureCard p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; }
+
+/* Modes */
+.modes {
+  padding: 60px 20px 80px; text-align: center;
+}
+.modes h2 { margin-bottom: 24px; }
+.modeGrid {
+  max-width: 700px; margin: 0 auto;
+  display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;
+}
+.modeChip {
+  padding: 8px 18px; border-radius: 20px;
+  background: var(--gold-dim); color: var(--navy);
+  font-size: 14px; font-weight: 500; border: 1px solid var(--gold);
+  transition: all var(--transition);
+}
+.modeChip:hover { background: var(--gold); color: var(--navy); }
+
+/* Footer */
+.footer {
+  background: var(--navy); color: var(--text-muted);
+  padding: 24px; text-align: center; font-size: 13px;
+}
+
+@media (max-width: 768px) {
+  .title { font-size: 2rem; }
+  .hero { padding: 60px 20px 80px; }
+  .featureGrid { grid-template-columns: 1fr; }
+}

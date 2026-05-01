@@ -1,0 +1,14 @@
+{
+  "executionEnvironments": [
+    {
+      "root": "apps/api",
+      "extraPaths": ["apps/api"]
+    }
+  ],
+  "venvPath": "apps/api",
+  "venv": ".venv",
+  "reportMissingImports": "warning",
+  "reportMissingTypeStubs": "none",
+  "pythonVersion": "3.14",
+  "typeCheckingMode": "basic"
+}

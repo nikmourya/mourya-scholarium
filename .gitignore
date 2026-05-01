@@ -1,0 +1,55 @@
+# ============================================
+# Mourya Scholarium — Git Ignore
+# ============================================
+
+# --- Environment ---
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+.venv/
+venv/
+env/
+*.whl
+
+# --- Node.js ---
+node_modules/
+.next/
+out/
+.vercel/
+
+# --- Database ---
+*.db
+*.sqlite
+*.sqlite3
+
+# --- IDE ---
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# --- Docker ---
+docker-compose.override.yml
+
+# --- OS ---
+*.log
+*.pid
+*.seed
+
+# --- Build artifacts ---
+tsconfig.tsbuildinfo
