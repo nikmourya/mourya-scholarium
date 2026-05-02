@@ -8,6 +8,66 @@ import { create } from 'zustand';
 // In production, set NEXT_PUBLIC_API_URL to the deployed backend URL.
 const API = process.env.NEXT_PUBLIC_API_URL ?? '';
 
+// ---------------------------------------------------------------------------
+// Wake-up / health-check helpers (Render free tier cold-start handling)
+// ---------------------------------------------------------------------------
+
+/** How long to wait for the health ping before giving up (ms). */
+const HEALTH_TIMEOUT_MS = 10_000;
+
+/**
+ * Ping the backend health endpoint once.
+ * Returns true if the server responded OK, false otherwise.
+ * Never throws.
+ */
+export async function pingServer(): Promise<boolean> {
+  try {
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), HEALTH_TIMEOUT_MS);
+    const res = await fetch(`${API}/`, { signal: controller.signal });
+    clearTimeout(id);
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Wake up the Render free-tier server before making a real API call.
+ *
+ * - If the server responds within HEALTH_TIMEOUT_MS  => resolves immediately.
+ * - If the first ping times out / fails, retries up to `maxRetries` times
+ *   with a 3-second gap.
+ * - Calls the optional `onWaking` callback on the first failure so the UI can
+ *   show a "Server is waking up…" message.
+ * - Throws a user-friendly Error only if all retries are exhausted.
+ */
+export async function wakeUpServer(
+  onWaking?: () => void,
+  maxRetries = 5
+): Promise<void> {
+  let notified = false;
+  for (let i = 0; i <= maxRetries; i++) {
+    const ok = await pingServer();
+    if (ok) return; // server is awake
+    if (!notified) {
+      notified = true;
+      onWaking?.();
+    }
+    if (i < maxRetries) {
+      await new Promise(r => setTimeout(r, 3_000));
+    }
+  }
+  throw new Error(
+    'Server is waking up, please try again in 30 seconds. ' +
+    '(Render free tier spins down after inactivity.)'
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Interfaces
+// ---------------------------------------------------------------------------
+
 interface UserProfile {
   english_level: string;
   academic_level: string;
@@ -53,6 +113,10 @@ interface AppState {
   submitFeedback: (sessionId: string, signalType: string) => Promise<void>;
 }
 
+// ---------------------------------------------------------------------------
+// apiFetch helper
+// ---------------------------------------------------------------------------
+
 /**
  * Helper: make a fetch call with structured error handling.
  * Returns the Response on success, throws a user-friendly Error on failure.
@@ -61,14 +125,23 @@ async function apiFetch(path: string, options?: RequestInit): Promise<Response> 
   let res: Response;
   try {
     res = await fetch(`${API}${path}`, options);
-  } catch (networkError) {
+  } catch (networkError: any) {
     // fetch() itself threw — network-level failure (server unreachable, DNS, etc.)
+    // Distinguish a likely cold-start scenario from a permanent connectivity issue.
+    const isAbort = networkError?.name === 'AbortError';
+    if (isAbort) {
+      throw new Error(
+        'Server is waking up, please try again in 30 seconds. ' +
+        '(Render free tier spins down after inactivity.)'
+      );
+    }
     throw new Error(
-      'Cannot connect to the server. Please make sure the backend is running on ' +
-      (API || 'http://localhost:8000') + ' and try again.'
+      'Cannot connect to the server. ' +
+      'If you just opened the app, the server may be waking up — ' +
+      'please try again in 30 seconds. ' +
+      `(Backend: ${API || 'http://localhost:8000'})`
     );
   }
-
   if (!res.ok) {
     // Server responded with an error status
     let detail = `Request failed (${res.status})`;
@@ -81,9 +154,12 @@ async function apiFetch(path: string, options?: RequestInit): Promise<Response> 
     }
     throw new Error(detail);
   }
-
   return res;
 }
+
+// ---------------------------------------------------------------------------
+// Store
+// ---------------------------------------------------------------------------
 
 const useStore = create<AppState>((set, get) => ({
   token: typeof window !== 'undefined' ? localStorage.getItem('ms_token') : null,
