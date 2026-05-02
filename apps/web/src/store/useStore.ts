@@ -13,7 +13,7 @@ const API = process.env.NEXT_PUBLIC_API_URL ?? '';
 // ---------------------------------------------------------------------------
 
 /** How long to wait for the health ping before giving up (ms). */
-const HEALTH_TIMEOUT_MS = 10_000;
+const HEALTH_TIMEOUT_MS = 15_000;
 
 /**
  * Ping the backend health endpoint once.
@@ -44,7 +44,7 @@ export async function pingServer(): Promise<boolean> {
  */
 export async function wakeUpServer(
   onWaking?: () => void,
-  maxRetries = 5
+  maxRetries = 20
 ): Promise<void> {
   let notified = false;
   for (let i = 0; i <= maxRetries; i++) {
@@ -59,7 +59,7 @@ export async function wakeUpServer(
     }
   }
   throw new Error(
-    'Server is waking up, please try again in 30 seconds. ' +
+    'Server is waking up, please wait up to 60 seconds. ' +
     '(Render free tier spins down after inactivity.)'
   );
 }
@@ -131,14 +131,14 @@ async function apiFetch(path: string, options?: RequestInit): Promise<Response> 
     const isAbort = networkError?.name === 'AbortError';
     if (isAbort) {
       throw new Error(
-        'Server is waking up, please try again in 30 seconds. ' +
+        'Server is waking up, please wait up to 60 seconds. ' +
         '(Render free tier spins down after inactivity.)'
       );
     }
     throw new Error(
       'Cannot connect to the server. ' +
       'If you just opened the app, the server may be waking up — ' +
-      'please try again in 30 seconds. ' +
+      'please wait up to 60 seconds. ' +
       `(Backend: ${API || 'http://localhost:8000'})`
     );
   }
