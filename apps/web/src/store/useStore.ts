@@ -13,7 +13,7 @@ const API = process.env.NEXT_PUBLIC_API_URL ?? '';
 // ---------------------------------------------------------------------------
 
 /** How long to wait for the health ping before giving up (ms). */
-const HEALTH_TIMEOUT_MS = 15_000;
+const HEALTH_TIMEOUT_MS = 65_000;
 
 /**
  * Ping the backend health endpoint once.
