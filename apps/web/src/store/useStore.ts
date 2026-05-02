@@ -121,7 +121,7 @@ interface AppState {
  * Helper: make a fetch call with structured error handling.
  * Returns the Response on success, throws a user-friendly Error on failure.
  */
-async function apiFetch(path: string, options?: RequestInit): Promise<Response> {
+async function apiFetch(path: string, options?: RequestInit, retries = 20, onWaking?: () => void): Promise<Response> {
   let res: Response;
   try {
     res = await fetch(`${API}${path}`, options);
