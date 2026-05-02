@@ -24,9 +24,9 @@ export async function pingServer(): Promise<boolean> {
   try {
     const controller = new AbortController();
     const id = setTimeout(() => controller.abort(), HEALTH_TIMEOUT_MS);
-    const res = await fetch(`${API}/`, { signal: controller.signal });
+    const res = await fetch(`${API}/`, { signal: controller.signal, mode: 'no-cors' as RequestMode });
     clearTimeout(id);
-    return res.ok;
+    return res.type === 'opaque' || res.ok;
   } catch {
     return false;
   }
