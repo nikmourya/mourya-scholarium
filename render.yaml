@@ -1,15 +1,9 @@
-# Render deployment blueprint for Mourya Scholarium Backend
-# Deploy at https://render.com — connect your GitHub repo
 services:
   - type: web
     name: mourya-scholarium-api
     runtime: python
-    region: oregon
-    plan: free
     rootDir: apps/api
-    buildCommand: |
-      pip install -r requirements.txt
-      python -m spacy download en_core_web_sm
+    buildCommand: pip install -r requirements.txt
     startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: APP_ENV
@@ -19,7 +13,7 @@ services:
       - key: USE_SQLITE
         value: "true"
       - key: CORS_ORIGINS
-        sync: false                    # Set manually to your Vercel frontend URL
+        sync: false # Set manually to your Vercel frontend URL
       - key: APP_SECRET_KEY
         generateValue: true
       - key: JWT_SECRET_KEY
@@ -29,4 +23,4 @@ services:
       - key: JWT_EXPIRATION_MINUTES
         value: "1440"
       - key: ANTHROPIC_API_KEY
-        sync: false                    # Set manually if you have one
+        sync: false # Set manually if you have one
