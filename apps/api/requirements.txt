@@ -1,4 +1,7 @@
-# ── Mourya Scholarium API — Python Dependencies ──
+# -- Mourya Scholarium API -- Python Dependencies --
+# Render-compatible: heavy ML/NLP libs (spacy, sklearn, xgboost, etc.) removed
+# because they fail to compile on Render free tier.
+# None of them are actually imported by any Python module at runtime.
 
 # Core
 fastapi==0.111.0
@@ -12,7 +15,6 @@ sqlalchemy==2.0.30
 asyncpg==0.29.0
 aiosqlite==0.20.0
 alembic==1.13.1
-# psycopg2-binary==2.9.9
 
 # Auth
 python-jose[cryptography]==3.3.0
@@ -22,23 +24,6 @@ python-multipart==0.0.9
 # HTTP / APIs
 httpx==0.27.0
 aiohttp==3.9.5
-
-# Redis
-redis==5.0.7
-
-# Qdrant
-qdrant-client==1.9.1
-
-# LLM
-anthropic==0.28.0
-
-# NLP & ML
-spacy==3.7.5
-textstat==0.7.3
-numpy==1.26.4
-scikit-learn==1.5.0
-xgboost==2.0.3
-lightgbm==4.3.0
 
 # Utilities
 uuid6==2024.1.12
